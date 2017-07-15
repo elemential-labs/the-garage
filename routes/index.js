@@ -14,8 +14,10 @@ module.exports = io => {
 function api (req, res) {
   if (! req.body.uid) return res.status(400).send({code: 1, message: 'UID missing'})
   User.find({uid: req.body.uid}, (err, user) => {
+    console.log(user)
     if (err) return res.status(500).send({code: 500, message: 'Internal error'})
-    if (! user.created_at) return res.status(400).send({code: 2, message: 'No record with UID found'})
+    if (user.length == 0) return res.status(400).send({code: 2, message: 'No record with UID found'})
+    user = user[0]
     const dataHash = cleanse(req.body)
     let ans = {}
     Object.keys(dataHash).forEach(k => {
