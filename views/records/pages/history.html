@@ -1,0 +1,104 @@
+{% extends "../layouts/master.html" %}
+
+{% block content %}
+<div ng-controller="TranasctionsCtrl">
+<div class="container-fluid">
+  <div class="col-md-9">
+    <div class="white-box">
+      <ul class="list-group">
+        <a ng-repeat="block in blocks" class="list-group-item cur" ng-click="fetchTransactions(block.blockHeight)">
+          <span class="badge">{{block.numTxs}} transactions</span>
+          Block no: {{block.blockHeight}}
+        </a>
+      </ul>
+    </div>
+    <div style="height: 200px;"></div>
+  </div>
+</div>
+
+<div id="transactions-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Transactions</h4>
+      </div>
+      <div class="modal-body">
+        <p ng-repeat="transaction in transactions">
+          {{transaction.message}}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+  $('#navHome').addClass('active');
+</script>
+
+<script>
+angular.module('DeployerApp')
+  .controller('TranasctionsCtrl', ['$scope', '$http', 'Upload', '$filter', function ($scope, $http, Upload, $filter) {
+    window.s = $scope;
+    $scope.fetchTransactions = fetchTransactions;
+    var banksHash = <%= JSON.stringify(banks) %>;
+    var userPublicKey = "<%= publicKey %>".replace(/\|\|/g, '\n');
+    console.log(banksHash);
+
+    getBlockHeight(function (height) {
+      $http.post('http://'+window.location.hostname+'/transaction/block-history', {blockHeight: height})
+        .then(function (data) {
+          $scope.blocks = data.data.nonEmptyBlocks;
+        })
+
+    });
+
+    function fetchTransactions (height) {
+      $http.post('http://'+window.location.hostname+'/transaction/block-transactions', {blockHeight: height})
+        .then(function (data) {
+          var transactions = _.chain(data.data).map(function (d) {
+            return JSON.parse(d);
+          }).filter(function (tx) {
+            return (tx.publicKey == userPublicKey);
+          }).value();
+          $scope.transactions = _.map(transactions, formatTransaction);
+          $('#transactions-modal').modal('show');
+          console.log(data.data);
+        });
+    }
+    function getBlockHeight (cb) {
+      $http.get('http://'+window.location.host+'/status')
+        .then(function (data) {
+          cb(data.data.result[1].latest_block_height);
+        });
+    }
+
+    function formatTransaction (transaction) {
+      // transaction = JSON.parse(transaction);
+      var tx = '';
+      if (transaction.action == 'QUERY') {
+        tx = 'You made a query at the following date - '+$filter('date')(new Date(transaction.timestamp), 'medium')+' using the following query parameters: '+JSON.stringify(transaction.payload);
+      }
+      else {
+        tx = 'A record has been inserted by the NSE at '+$filter('date')(new Date(transaction.timestamp), 'medium');
+      }
+      return {message: tx, k: transaction.timestamp};
+    }
+    // function getBanksHash (banks) {
+    //   return {};
+    // }
+
+    function fail (err) {
+      // toastr.error('Error');
+      console.log(err);
+    }
+  }]);
+</script>
+{% endblock %}

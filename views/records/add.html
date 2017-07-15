@@ -1,0 +1,83 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<div class="row" ng-controller="UserRecordAddCtrl">
+  <div class="col-md-4">
+    <sidenav ></sidenav>
+  </div>
+  <div class="col-md-8">
+    <section class="panel">
+      <header class="panel-heading">
+        Add a user record
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div  ng-show="label == 'one'" class="white-box">
+              <form>
+                <div class="form-group">
+                  <label>Application type</label>
+                  <input ng-model="user.type" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>PAN CARD</label>
+                  <input ng-model="user.panNum" type="text" class="form-control">
+                </div>
+                <div ng-show="user.panNum" class="form-group">
+                  <label>upload file</label>
+                  <input ngf-select="uploadDocument('panNumFile', $file)" type="file">
+                </div>
+                <div class="form-group">
+                  <label>Aadhar Number</label>
+                  <input ng-model="user.aadharNum"  type="text" class="form-control">
+                </div>
+                <div ng-show="user.aadharNum" class="form-group">
+                  <label>upload file</label>
+                  <input ngf-select="uploadDocument('aadharNumFile', $file)" type="file">
+                </div>
+                <div class="form-group">
+                  <label>Passport number</label>
+                  <input ng-model="user.passportNum"  type="text" class="form-control">
+                </div>
+                <div ng-show="user.passportNum" class="form-group">
+                  <label>upload file</label>
+                  <input ngf-select="uploadDocument('passportNumFile', $file)" type="file">
+                </div>
+                <div class="form-group">
+                  <label>Account type</label>
+                  <input ng-model="user.accountType"  type="text" class="form-control">
+                </div>
+                <!-- <button class="btn btn-primary" type="submit">Add user</button> -->
+              </form>
+            </div>
+            {% include 'pages/applicantname.html' %}
+            {% include 'pages/applicantdetails.html' %}
+            {% include 'pages/applicantaddressdetails.html' %}
+            {% include 'pages/applicantcontactdetails.html' %}
+            {% include 'pages/applicantdocdetails.html' %}
+            {% include 'pages/correspondenseaddressdetails.html' %}
+            {% include 'pages/familydetails.html' %}
+            {% include 'pages/jurisdictionaddressdetailsname.html' %}
+            {% include 'pages/relatedpersondetails.html' %}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    var me = <%= JSON.stringify(me) %>
+  </script>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}

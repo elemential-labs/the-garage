@@ -1,0 +1,65 @@
+{% extends "layouts/master.html" %}
+
+{% block content %}
+<div ng-controller="PeersCtrl">
+  <div class="row">
+    <div ng-repeat="peer in peers" class="col-md-3">
+      <div class="mini-stat clearfix">
+        <span class="mini-stat-icon" ng-class="{green: peer.status, orange: (! peer.status)}"><i class="fa fa-users"></i></span>
+        <div class="mini-stat-info">
+          <span>IP: {{peer.ip}}</span>
+          {{ peer.status ? 'Connected' : 'Disconected'}}
+          <span ng-show="peer.isNSE">NSE</span>
+        </div>
+      </div>
+    </div>
+    <p ng-hide="hideLoading">Loading peers..</p>
+    <h3 ng-show="peers.length == 0">No peers connected</h3>
+  </div>
+
+    <script>
+      var me = <%= JSON.stringify(user) %>
+    </script>
+    <style media="screen">
+      .mini-stat-info span {
+        font-size: 17px;
+      }
+    </style>
+  </div>
+
+  <div class="modal fade" id="blockModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Block details</h4>
+        </div>
+        <div class="modal-body">
+          <div class="list-group">
+            <a class="list-group-item cur" style="margin:15px;padding:20px">
+              <h4 class="list-group-item-heading">Block height {{focusBlock.height}}</span></h4>
+              <ul class="list-group" style="margin:5px;padding:5px">
+                <li class="list-group-item"><span style="font-weight:bold;">Hash:</span> {{focusBlock.hash}}</li>
+                <li class="list-group-item"><span style="font-weight:bold;">Validators hash:</span> {{focusBlock.validators_hash}}</li>
+                <li class="list-group-item"><span style="font-weight:bold;">No of txs:</span> {{focusBlock.num_txs}}</li>
+                <li class="list-group-item"><span style="font-weight:bold;">No of validators:</span> {{focusBlock.validators.length}}</li>
+                <li style="overflow-x: scroll;" class="list-group-item"><span style="font-weight:bold;">Validators signatures:</span> {{focusBlock.validators_signatures}}</li>
+                <li style="overflow-x: scroll;" class="list-group-item"><span style="font-weight:bold;">Validators addresses:</span> {{focusBlock.validators_addresses}}</li>
+              </ul>
+            </a>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <script>
+    $('#navPeers').addClass('active');
+  </script>
+{% endblock %}

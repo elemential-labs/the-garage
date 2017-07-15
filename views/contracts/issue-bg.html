@@ -1,0 +1,70 @@
+{% extends '../layouts/master.html' %} 
+
+{% block content %}
+<div class="row" ng-controller="proposeBGCtrl">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        Applications for Bank Guarantee
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="list-group">
+              <a class="list-group-item cur" ng-repeat="application in applications | orderBy: reverse : 'created_at'" style="margin:15px;padding:15px">
+                <h4 class="list-group-item-heading">Application from applicant_id: {{application.applicant}} created at: {{application.created_at | date: 'medium'}}</h4>
+                <p>The contract this application refers to has a contract_token of ID: {{application.contract_token}}</p>
+                <p><b>Terms of the contract are:</b></p>
+                <div ng-bind-html="application.contract.terms"></div>
+                <br>
+                <p>
+                  <b>Seller status: {{application.seller_status}}</b>
+                </p>
+                <p>
+                  <b>Buyer status: {{application.buyer_status}}</b>
+                </p>
+                <br>
+                
+                  <button type="button" ng-click="BGCreateModalOpen(application)" class="btn btn btn-primary">Issue Bank Guarantee</button>
+              </a>
+              <h4 ng-show="applications.length == 0">Nobody has applied for a BG yet</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal fade" id="BGCreateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Input terms for bank guarantee</h4>
+        </div>
+        <form name="BGCreateFrm" ng-submit="BGCreate(selectedApplication, proposal)" novalidate>
+          <div class="modal-body">
+            <p>Enter terms below</p>
+            <textarea required class="form-control" name="bg-terms" ng-model="proposal.terms"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" ng-click="proposeBG">Generate bank guarantee</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}

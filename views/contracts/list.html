@@ -1,0 +1,92 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<div class="row" ng-controller="ContractListCtrl">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        My Contract Inbox
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="list-group">
+              <a class="list-group-item cur" ng-repeat="contract in contracts" style="margin:15px;padding:20px">
+                <h4 class="list-group-item-heading">Contract ID {{contract._id}} with: <span style="text-decoration:underline;">{{contract.counterparty._id+' - '+contract.counterparty.name }}</span> created at: <span style="text-decoration:underline;"> {{contract.created_at | date:'medium'}}</span></h4>
+                    <ul class="list-group" style="margin:5px;padding:5px">
+                      <li class="list-group-item"><span style="font-weight:bold;">Details of goods to be sold/purchased:</span> {{contract.sale_of_goods}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Price of goods:</span> {{contract.purchase_price}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Down payment:</span> {{contract.down_payment}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Time of payment:</span> {{contract.time_of_payment}}</li>
+                      <li ng-show="contract.time_of_payment=='At the specified date'" class="list-group-item"><span style="font-weight:bold;">Specified date of payment:</span> {{contract.time_of_payment_specified_date | date:'medium'}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Payment method:</span> {{contract.payment_method}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Delivery of goods:</span> {{contract.delivery_of_goods | date:'medium'}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Condition of goods:</span> {{contract.condition_of_goods}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Time of payment:</span> {{contract.additional_terms_and_conditions}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Buyer status:</span> {{contract.buyer_status}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Seller status:</span> {{contract.seller_status}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Download contract file link:</span> <button class="btn btn-link" ng-click="goToW(contract.contract.link)">Download link</button></li>
+                    </ul>
+                <br>
+                <div ng-show="! contract.completed">
+                  <button ng-click="acceptContract(contract)" class="btn btn-xs btn-primary rblbluebutton">Accept</button>
+                  <button ng-click="rejectContract(contract)" class="btn btn-xs btn-danger rblredbutton">Reject</button>
+                  <button ng-click="modifyContract(contract)" class="btn btn-xs btn-warning">Modify</button>
+                </div>
+                <div ng-show="contract.completed">
+                  <span ng-show="contract.accepted" class="label label-primary rblbluebutton">Accepted</span>
+                  <span ng-show="contract.rejected" class="label label-danger rblredbutton">Rejected</span>
+                  <button ng-show="contract.accepted" ng-click="goTo('/bgapplications/actions/apply/'+contract.token)" class="btn btn-xs btn-default">Apply for BG</button>
+                </div>
+              </a>
+              <h4 ng-show="contracts.length == 0">No contracts yet</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+ <!-- We can use this code if we want to set up rejection reasons for contracts -->
+  <!-- <div class="modal fade" id="rejectReasonModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Reject This Contract</h4>
+        </div>
+        <form name="BGApplyFrm" ng-submit="BGApply(selectedContract, application)" novalidate>
+          <div class="modal-body">
+              <div class="form-group">
+                <label style="font-weight:bold;">Applicant:</label>
+                <input required class="form-control" type="text" placeholder="Enter the name of the applicant for this bank guarantee" ng-model="contract.rejection_reason">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Beneficiary:</label>
+                <input required class="form-control" type="text" placeholder="Enter the name of the beneficiary of this bank guarantee" ng-model="contract.beneficiary">
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" ng-click="proposeBG">Generate bank guarantee</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> -->
+
+  <script>
+    var me = <%= JSON.stringify(user) %>
+  </script>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<div class="row" ng-controller="UserRecordsSearchCtrl">
+  <div class="col-md-10 col-md-offset-1">
+    <section class="panel">
+      <header class="panel-heading">
+        Search for a user record
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-8 col-md-offset-2">
+              <form style="margin-bottom:10px" ng-submit="search(user)">
+                <div class="col-md-6 form-group">
+                  <label>PAN Card Number</label>
+                  <input ng-model="user.panNum" type="text" class="form-control" autofocus>
+                </div>
+                <div class="col-md-6 form-group">
+                  <label>Aadhar Card Number</label>
+                  <input ng-model="user.aadharNum" type="text" class="form-control">
+                </div>
+                <div class="col-md-6 form-group">
+                  <label>Passport Number</label>
+                  <input ng-model="user.passportNum" type="text" class="form-control">
+                </div>
+                <div class="col-md-6 form-group">
+                  <label>CKYC Number</label>
+                  <input ng-model="user.ckycId" type="text" class="form-control">
+                </div>
+                <label style="margin-left: 15px;">
+                  <input type="checkbox" ng-model="user.credit_search"> Credit search
+                  <i class="fa fa-question-circle" data-toggle="tooltip" title="Credit search will first log the search on the blockchain and then return the results. Should be performed when KYC is required for a loan."></i>
+                </label>
+                <button ng-hide="showReset" ng-hide="startingSearch" type="submit" class="pull-right btn btn-primary">Search</button>
+                <button ng-show="showReset" type="button" ng-click="reset()" class="pull-right btn btn-primary">Reset</button>
+              </form>
+            </div>
+            <div ng-show="! showResults && matches.length >= 1" class="row">
+            <!-- <div class="row"> -->
+              <div class="col-md-12">
+                <hr />
+                <h4>Probable matches</h4>
+              </div>
+              <div class="col-md-3" ng-repeat="match in matches">
+                <div class="well">
+                  <i ng-show="match.vm && match.vm != 0" class="fa fa-check-circle-o"></i>
+                  <i ng-show="! match.vm || match.vm == 0" class="fa fa-times-circle-o"></i>
+                  <span style="text-decoration: underline;">{{match.record_status}}</span>
+                  <h4>{{match.firstName}}</h4>
+                  <p>PAN Number: {{match.panNum}}</p>
+                  <p>Aadhar Number: {{match.aadharNum}}</p>
+                  <p>Passport Number: {{match.passportNum}}</p>
+                  <p>CKYC ID: {{match.ckycId}}</p>
+                  <button ng-click="showRecord(match, $index)" class="btn-link">Show record</button>
+                </div>
+              </div>
+            </div>
+            <div ng-show="showProbableOptionsBtn" class="row">
+            <!-- <div class="row"> -->
+              <div class="col-md-12">
+                <hr />
+                <button ng-click="showResults = false; showProbableOptionsBtn = false; showProbableMatch = true;" class="btn btn-primary">Show probable match options</button>
+              </div>
+            </div>
+            <div ng-show="showResults" class="row">
+              <div class="col-md-12">
+                <hr />
+              </div>
+               {% include '../edit/label1.html' %}
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var me = <%= JSON.stringify(me) %>
+  </script>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}

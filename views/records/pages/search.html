@@ -1,0 +1,218 @@
+{% extends "../layouts/master.html" %}
+
+{% block content %}
+<div ng-controller="SearchCtrl">
+  <div class="col-md-8 col-md-offset-2">
+    <form style="margin-bottom:10px" ng-submit="userRecordSearch(user)">
+      <div class="col-md-6 form-group">
+        <label>PAN Card Number</label>
+        <input ng-model="user.panNum" type="text" class="form-control">
+      </div>
+      <div class="col-md-6 form-group">
+        <label>Aadhar Card Number</label>
+        <input ng-model="user.aadharNum" type="text" class="form-control">
+      </div>
+      <div class="col-md-6 form-group">
+        <label>Passport Number</label>
+        <input ng-model="user.passportNum" type="text" class="form-control">
+      </div>
+      <div class="col-md-6 form-group">
+        <label>CKYC Number</label>
+        <input ng-model="user.ckycId" type="text" class="form-control">
+      </div>
+      <button ng-hide="hideSearch" type="submit" class="pull-right btn btn-primary">Search</button>
+      <button ng-show="hideSearch" type="button" ng-click="reset()" class="pull-right btn btn-primary">Reset</button>
+    </form>
+  </div>
+  <div ng-show="showProbableMatch && matches.length >= 1" class="row">
+  <!-- <div class="row"> -->
+    <div class="col-md-12">
+      <hr />
+      <h4>Probable matches</h4>
+    </div>
+    <div class="col-md-3" ng-repeat="match in matches">
+      <div class="well">
+        <h4>{{match.firstName}}</h4>
+        <p>PAN Number: {{match.panNum}}</p>
+        <p>Aadhar Number: {{match.aadharNum}}</p>
+        <p>Passport Number: {{match.passportNum}}</p>
+        <p>CKYC ID: {{match.ckycId}}</p>
+        <button ng-click="showRecord(match, $index)" class="btn-link">Show record</button>
+      </div>
+    </div>
+  </div>
+  <div ng-show="showProbableOptionsBtn" class="row">
+  <!-- <div class="row"> -->
+    <div class="col-md-12">
+      <hr />
+      <button ng-click="showResults = false; showProbableOptionsBtn = false; showProbableMatch = true;" class="btn btn-primary">Show probable match options</button>
+    </div>
+  </div>
+  <div ng-show="showResults" class="row">
+    <div class="col-md-12">
+      <hr />
+    </div>
+    {% include '../edit/label1.html' %}
+  </div>
+  <div class="clearfix"></div>
+  <div ng-show="logs.length > 0" style="margin-top: 30px;">
+    <div class="row">
+      <div class="col-md-12">
+        <div ng-repeat="loger in logs" class="panel panel-primary">
+         <!-- Default panel contents -->
+         <div class="panel-heading">Blockchain log for block height: {{loger[1].value}}</div>
+         <!-- <div class="panel-body">
+           <p>...</p>
+         </div> -->
+
+         <!-- List group -->
+         <ul class="list-group">
+           <li ng-repeat="log in loger" class="list-group-item">
+            <b>{{log.label}}</b>
+            <br>
+            <span>{{log.value}}</span>
+           </li>
+         </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="height: 200px; clear: both;"></div>
+{% endblock %}
+
+{% block javascript %}
+
+
+<script>
+  $('#navHome').addClass('active');
+</script>
+
+<script>
+angular.module('DeployerApp')
+  .controller('SearchCtrl', ['$scope', '$http', function ($scope, $http) {
+    window.s = $scope;
+    $scope.label = 'one';
+    $scope.logs = [];
+    $scope.userRecordSearch = userRecordSearch;
+    $scope.showRecord = showRecord;
+    $scope.userUpdate = userUpdate;
+    $scope.reset = reset;
+
+    // json.result[1].block_meta.header.height
+    // json.result[1].block_meta.header.last_block_hash
+    // json.result[1].block_meta.hash
+    // json.result[1].block.header.validators_hash
+    // json.result[1].block.data.txs
+    // json.result[1].block.last_commit.precommits
+    // json.result[1].block.last_commit.precommits.map((x) => {
+    //   return x.signature;
+    // });
+
+
+    function userRecordSearch (userData) {
+      if (! userData) {
+        toastr.error('Please fill atleast one parameter to begin search');
+        return;
+      }
+      $http.post('/transaction/push', {action: 'QUERY', payload: userData})
+        .then(userRecordFound, userRecordFailed);
+    }
+    function userRecordFound (data) {
+      if (data.data.matchType == 'NONE') {
+        toastr.warning('No user record found');
+        return;
+      }
+      if (data.data.matchType == 'PROBABLE') {
+        toastr.success('Multiple records found');
+        $scope.matches = data.data.records;
+        $scope.showProbableMatch = true;
+        return;
+      }
+      toastr.success('User record found');
+      fetchLog($scope.user);
+      $scope.user = data.data.records[0];
+      $scope.showResults = true;
+      $scope.hideSearch = true;
+    }
+    function userRecordFailed (err) {
+      toastr.error('Failed');
+      fetchLog($scope.user);
+    }
+    function showRecord (record, index) {
+      $scope.user = record;
+      $scope.showResults = true;
+      $scope.showProbableMatch = false;
+      $scope.showProbableOptionsBtn = true;
+    }
+    function userUpdate (user) {
+      $http.post('/transaction/push', {action: 'INSERT', payload: user})
+        .then(userUpdated, userUpdateFailed);
+    }
+    function userUpdated (data) {
+      toastr.success('User has been saved');
+      $scope.user = {};
+    }
+    function userUpdateFailed (err) {
+      toastr.error('Failed');
+      fail(err);
+    }
+    function reset () {
+      window.location.reload();
+    }
+    function fetchLog (user) {
+      // get block height
+      // get jai api
+      $http.get('http://'+window.location.host+'/status')
+        .then(function (data) {
+          $http.post('/transaction/fetch-block', {
+            maxHeight: data.data.result[1].latest_block_height,
+            transaction: {
+              action: 'QUERY',
+              payload: user
+            }
+          })
+          .then(function (data) {
+            var json = data.data;
+            var arr = [];
+            arr.push({
+              label: 'Search for', value: JSON.stringify(user)
+            });
+            arr.push({
+              label: 'Block height', value: json.result[1].block_meta.header.height
+            });
+            arr.push({
+              label: 'Block hash', value: json.result[1].block_meta.hash
+            });
+            arr.push({
+              label: 'Last block hash', value: json.result[1].block_meta.header.last_block_hash
+            });
+            arr.push({
+              label: 'Validators hash', value: json.result[1].block.header.validators_hash
+            });
+            arr.push({
+              label: 'Validator signatures', value: _.chain(json.result[1].block.last_commit.precommits).map(function  (x) {
+                return (x) ? x.signature : "";
+              }).value().join(', ')
+            });
+            $scope.logs.push(arr);
+
+            // json.result[1].block.data.txs
+            // json.result[1].block.last_commit.precommits
+            // json.result[1].block.last_commit.precommits.map((x) => {
+            //   return x.signature;
+            // });
+          })
+        });
+      // $http.get('http://13.76.164.172:46657/block?height=333212')
+      //   .then(function (data) {
+      //
+      //   }, fail);
+    }
+
+    function fail (err) {
+      toastr.error('Error');
+    }
+  }]);
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<div class="row" ng-controller="BGuaranteesInboxUserCtrl">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        Bank Guarantees Inbox
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="list-group">
+              <a class="list-group-item cur" ng-repeat="contract in contracts" style="margin:15px;padding:15px">
+                <!--<h4 class="list-group-item-heading">Bank guarantee issued for applicant id: {{contract._id}} created at: {{contract.created_at | date: 'medium'}}</h4>-->
+                <p ng-bind-html="contract.terms" class="list-group-item-text"></p>
+              </a>
+              <h4 ng-show="contracts.length == 0">No bank guarantees yet</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var me = <%= JSON.stringify(user) %>
+    var bguarantees = <%= JSON.stringify(bguarantees) %>
+  </script>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}

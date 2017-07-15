@@ -1,0 +1,74 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<div class="row" ng-controller="BGuaranteesInboxBankCtrl">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        Bank Guarantees Inbox
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="list-group">
+              <a class="list-group-item cur" ng-repeat="contract in contracts" style="margin:15px;padding:15px">
+                <h4 class="list-group-item-heading">Bank guarantee issued for <span style="text-decoration:underline;">{{contract.applicant._id +' - '+ contract.applicant.name}}</span> created at: <span style="text-decoration:underline;">{{contract.created_at | date: 'medium'}}</span></h4>
+                <ul class="list-group" style="margin:10px;padding:5px">
+                      <li class="list-group-item"><span style="font-weight:bold;">Beneficiary:</span> {{contract.beneficiary._id}} - {{contract.beneficiary.name}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Beneficiary Address:</span> {{contract.beneficiary_address}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Underlying contract:</span> Contract_ID_{{contract.contract._id}}</li>
+                      <!-- <li class="list-group-item"><span style="font-weight:bold;">Contract date:</span> {{contract.contract_date | date:'medium'}}</li> -->
+                      <li class="list-group-item"><span style="font-weight:bold;">Underlying application:</span> Bank_Guarantee_Application_ID_{{contract.application._id}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Bank:</span> RBL</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Amount:</span> {{contract.amount}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Validity:</span> {{contract.validity | date:'medium'}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Claim period:</span> {{contract.claim_period | date:'medium'}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Type of guarantee:</span> {{contract.type_of_guarantee}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Nature of guarantee:</span> {{contract.nature_of_guarantee}}</li>
+                      <li ng-show="contract.nature_of_guarantee=='Specified below'" class="list-group-item"><span style="font-weight:bold;">Nature of guarantee details:</span> {{contract.additional_nature_of_guarantee_others}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Method of issue:</span> {{contract.method_of_issue}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Bank account number:</span> {{contract.bank_account_no}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Margin money percentage:</span> {{contract.margin_money}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Collateral details:</span> {{contract.collateral}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Issuing branch:</span> {{contract.issuing_branch}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Signatory 1 Name:</span> {{contract.sig1_name}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Signatory 1 Designation:</span> {{contract.sig1_designation}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Signatory 1 PA Number:</span> {{contract.sig1_pa_number}}</li>
+                      <li ng-show="contract.sig2_name" class="list-group-item"><span style="font-weight:bold;">Signatory 2 Name:</span> {{contract.sig2_name}}</li>
+                      <li ng-show="contract.sig2_designation" class="list-group-item"><span style="font-weight:bold;">Signatory 2 Designation:</span> {{contract.sig2_designation}}</li>
+                      <li ng-show="contract.sig2_pa_number" class="list-group-item"><span style="font-weight:bold;">Signatory 2 PA Number:</span> {{contract.sig2_pa_number}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Checker comments:</span> {{contract.checker_comments}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Download guarantee bond:</span> <button class="btn btn-link" ng-click="goToW(contract.bonds.link)">Download bond</button></li>
+                    </ul>
+                    <br>
+                    <div>
+                      <span ng-show="contract.accepted" class="label label-primary rblbluebutton">Checked and Issued</span>
+                      <span ng-show="contract.rejected" class="label label-danger rblredbutton">Rejected</span>
+                      <p ng-show="contract.rejected"><br><span style="font-weight:bold;">Rejection reason: </span>{{contract.rejection_reason}}</p>
+                      <span ng-show="contract.pending" class="label label-danger">Pending</span>
+                    </div>
+              </a>
+              <h4 ng-show="contracts.length == 0">No bank guarantees yet</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var me = <%= JSON.stringify(user) %>
+    var bguarantees = <%= JSON.stringify(bguarantees) %>
+  </script>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}

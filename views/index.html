@@ -1,0 +1,312 @@
+{% extends "layouts/master.html" %}
+
+{% block content %}
+<div ng-controller="DashboardCtrl">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="mini-stat clearfix">
+        <span class="mini-stat-icon orange"><i class="fa fa-users"></i></span>
+        <div class="mini-stat-info">
+          <span>{{meta.inserts}}</span>
+          No. of inserts
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="mini-stat clearfix">
+        <span class="mini-stat-icon tar"><i class="fa fa-credit-card"></i></span>
+        <div class="mini-stat-info">
+          <span>{{meta.creditSearches}}</span>
+          No. of credit queries
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="mini-stat clearfix">
+        <span class="mini-stat-icon pink"><i class="fa fa-search"></i></span>
+        <div class="mini-stat-info">
+          <span>{{meta.searches}}</span>
+          No. of queries
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="mini-stat clearfix">
+        <span class="mini-stat-icon green"><i class="fa fa-hdd-o"></i></span>
+        <div class="mini-stat-info">
+          <span>{{meta.peers.length}}</span>
+            No. of connected nodes
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3" ng-hide="nodeIsDown">
+      <div class="mini-stat clearfix">
+        <span class="mini-stat-icon green"><i class="fa fa-hdd-o"></i></span>
+        <div class="mini-stat-info">
+          <span>{{blockRate | number: 2}}</span>
+            Block generation rate (per second)
+        </div>
+      </div>
+    </div>
+    <div ng-hide="configServer.nodeFullyReady">
+      <div class="col-md-3" ng-show="nodeIsDown">
+        <div class="mini-stat clearfix">
+          <span class="mini-stat-icon green"><i class="fa fa-hdd-o"></i></span>
+          <div class="mini-stat-info">
+            <span>{{syncRate | number: 2}}</span>
+              Node sync rate (per second)
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3" ng-show="nodeIsDown">
+        <div class="mini-stat clearfix">
+          <span class="mini-stat-icon green"><i class="fa fa-hdd-o"></i></span>
+          <div class="mini-stat-info">
+              <div class="progress">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" ng-style="{width: syncPercentage}" style="width: 45%">
+                </div>
+              </div>
+              Node sync progress
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3" ng-hide="hideConnectionSpinner">
+      <div class="mini-stat clearfix">
+        <!-- <span class="mini-stat-icon green">&nbsp;</span> -->
+        <center>
+          <i style="font-size: 42px;" class="spinner-an fa fa-spinner"></i>
+        </center>
+        <div style="text-align: center;" class="mini-stat-info">
+            Connecting to Node
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3" ng-show="nodeIsDown && ! configServer.nodeURL">
+      <div class="mini-stat clearfix">
+        <h4>Node is down</h4>
+        <div class="mini-stat-info">
+          <button ng-click="switchToPublic()" class="btn btn-primary">Switch to public node</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3" ng-show="! nodeIsDown && configServer.nodeURL">
+      <div class="mini-stat clearfix">
+        <!-- <span class="mini-stat-icon green"><i class="fa fa-hdd-o"></i></span> -->
+        <h4>Node is up</h4>
+        <div class="mini-stat-info">
+          <button ng-click="switchToOwn()" class="btn btn-primary">Switch to own node</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="display: none;">
+    <div class="col-md-12">
+      <!--earning graph start-->
+      <section class="panel">
+        <header class="panel-heading">
+          Bank guarantees issued <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+          <a href="javascript:;" class="fa fa-cog"></a>
+          <a href="javascript:;" class="fa fa-times"></a>
+          </span>
+        </header>
+        <div class="panel-body">
+          <div id="graph-area" class="main-chart"></div>
+        </div>
+      </section>
+      <!--earning graph end-->
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div style="display: none;" class="col-md-12">
+      <section class="panel">
+        <div class="panel-body">
+          <div class="top-stats-panel">
+            <h4 class="widget-h">Blockchain viewer</h4>
+            <div class="col-md-12" style="margin-bottom: 30px;">
+              <form class="form-inline" name="queryTransactionsFrm" ng-submit="queryTransactions(queryObj)">
+                <div class="form-group">
+                  <input required ng-model="queryObj.id" type="text" class="form-control" id="email" placeholder="Search query">
+                </div>
+                <div class="form-group">
+                  <select required ng-model="queryObj.type" ng-options="t.value as t.label for t in types" class="form-control">
+                    <option value="">Choose a category</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+              </form>
+            </div>
+            <div class="blockchain-wrapper">
+              <ul ng-hide="customRes" class="blockchain list-inline">
+                <li class="block cur" ng-click="openBlockModal(block)" ng-repeat="block in meta.blocks">
+                  <div class="content">
+                    <p class="height">Height: {{block.header.height}}</p>
+                    <p class="hash" >Hash: {{block.hash}}</p>
+                    <p class="hash" >No of transactions: 0</p>
+                  </div>
+                </li>
+              </ul>
+              <ul ng-show="customRes" class="blockchain list-inline">
+                <li class="block" ng-repeat="block in blocks">
+                  <div class="content">
+                    <p class="height">Height: {{block.height}}</p>
+                    <p class="hash" >Hash: {{block.hash}}</p>
+                    <p class="hash" >action: {{block.action}}</p>
+                  </div>
+                </li>
+              </ul>
+              <div>
+                <p ng-repeat="story in stories">{{story.message}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-md-6">
+      <section class="panel">
+        <div class="panel-body">
+          <div class="top-stats-panel">
+            <div class="gauge-canvas">
+              <h4 class="widget-h">Chain health</h4>
+              <canvas width=160 height=100 id="gauge"></canvas>
+            </div>
+            <ul class="gauge-meta clearfix">
+              <li id="gauge-textfield" class="pull-left gauge-value"></li>% healthy
+              <li class="pull-right gauge-title">Safe</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-md-6">
+      <section class="panel">
+        <div class="panel-body">
+          <div class="top-stats-panel">
+            <h4 class="widget-h">Latest blocks</h4>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Block height</th>
+                    <th>Block hash</th>
+                    <th>Validators hash</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-click="openBlockModal(block)" class="cur" ng-repeat="block in meta.blocks">
+                    <td>{{block.header.height}}</td>
+                    <td>{{block.hash}}</td>
+                    <td>{{block.header.validators_hash}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-md-6" style="display: none;">
+      <section class="panel">
+        <div class="panel-body">
+          <div class="top-stats-panel">
+            <h4 class="widget-h">Types of nodes</h4>
+            <div class="sm-pie">
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      var me = <%= JSON.stringify(user) %>
+    </script>
+    <script>
+      var configServer = <%= JSON.stringify(configServer) %>
+    </script>
+  </div>
+
+  <div class="modal fade" id="blockModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Block details</h4>
+        </div>
+        <div class="modal-body">
+          <div class="list-group">
+            <a class="list-group-item cur" style="margin:15px;padding:20px">
+              <h4 class="list-group-item-heading">Block height {{focusBlock.height}}</span></h4>
+              <ul class="list-group" style="margin:5px;padding:5px">
+                <li class="list-group-item"><span style="font-weight:bold;">Hash:</span> {{focusBlock.hash}}</li>
+                <li class="list-group-item"><span style="font-weight:bold;">Validators hash:</span> {{focusBlock.validators_hash}}</li>
+                <li class="list-group-item"><span style="font-weight:bold;">No of txs:</span> {{focusBlock.num_txs}}</li>
+                <li class="list-group-item"><span style="font-weight:bold;">No of validators:</span> {{focusBlock.validators.length}}</li>
+                <li style="overflow-x: scroll;" class="list-group-item"><span style="font-weight:bold;">Validators signatures:</span> {{focusBlock.validators_signatures}}</li>
+                <li style="overflow-x: scroll;" class="list-group-item"><span style="font-weight:bold;">Validators addresses:</span> {{focusBlock.validators_addresses}}</li>
+              </ul>
+            </a>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .spinner-an {
+      -webkit-animation-name: spin;
+      -webkit-animation-duration: 4000ms;
+      -webkit-animation-iteration-count: infinite;
+      -webkit-animation-timing-function: linear;
+      -moz-animation-name: spin;
+      -moz-animation-duration: 4000ms;
+      -moz-animation-iteration-count: infinite;
+      -moz-animation-timing-function: linear;
+      -ms-animation-name: spin;
+      -ms-animation-duration: 4000ms;
+      -ms-animation-iteration-count: infinite;
+      -ms-animation-timing-function: linear;
+      
+      animation-name: spin;
+      animation-duration: 4000ms;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+    @-ms-keyframes spin {
+        from { -ms-transform: rotate(0deg); }
+        to { -ms-transform: rotate(360deg); }
+    }
+    @-moz-keyframes spin {
+        from { -moz-transform: rotate(0deg); }
+        to { -moz-transform: rotate(360deg); }
+    }
+    @-webkit-keyframes spin {
+        from { -webkit-transform: rotate(0deg); }
+        to { -webkit-transform: rotate(360deg); }
+    }
+    @keyframes spin {
+        from {
+            transform:rotate(0deg);
+        }
+        to {
+            transform:rotate(360deg);
+        }
+    }
+  </style>
+  <script src="/js/dashboard.js"></script>
+  <script>
+    $('#navDashboard').addClass('active');
+  </script>
+{% endblock %}

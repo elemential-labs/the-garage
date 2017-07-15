@@ -1,0 +1,6 @@
+{
+  "secret": "secret",
+  "mongo": {
+    "host": "mongodb://localhost/iris_kyc"
+  }
+}

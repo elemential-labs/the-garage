@@ -1,0 +1,81 @@
+<div ng-show="label == 'relatedpersondetails'" class="white-box">
+      <form ng-submit="updateRecord(user)">
+      <div class="form-group">
+        <label>Related person kyc number</label>
+        <input ng-model="user.relatedKycNumber" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person type</label>
+        <input ng-model="user.relatedPersonType" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person First Name</label>
+        <input ng-model="user.relatedFirstName" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person Middle Name</label>
+        <input ng-model="user.relatedMiddleName" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person Last Name</label>
+        <input ng-model="user.relatedLastName" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person Passport number</label>
+        <input ng-model="user.relatedPassportNumber" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person Passport EXPIRY DATE</label>
+        <input ng-model="user.relatedPassportExpiryDate" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person voter ID CARD</label>
+        <input ng-model="user.relatedVoterId" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person PAN CARD</label>
+        <input ng-model="user.relatedPanCard" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person Driving LICENCE</label>
+        <input ng-model="user.relatedDrivingLicence" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person Driving LICENCE EXPIRY DATE</label>
+        <input ng-model="user.relatedDrivingLicenceExpiryDate" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person UID</label>
+        <input ng-model="user.relatedUID" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person NREGA Job card</label>
+        <input ng-model="user.relatedJobCard" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person OTHERS</label>
+        <input ng-model="user.relatedOthers" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person Identification number</label>
+        <input ng-model="user.relatedIdentificationNumber" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Related person Simplifies Measures account-document type code</label>
+        <input ng-model="user.relatedDocumenttype" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Remarks</label>
+        <input ng-model="user.remarks" type="text" class="form-control">
+      </div>
+
+      <button ng-show="activeUserProfile.type == 1" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> update record</button>
+      <button type="button" ng-click="trackUserRecord(user)" class="btn btn-info"><i class="fa fa-user"></i> Track user record</button>
+      <button type="button" ng-click="verify(user)" ng-hide="hideVerify" class="btn btn-success"><i class="fa fa-check"></i> Verified</button>
+      <div style="height: 100px;">
+
+      </div>
+
+
+    </form>
+    </div>

@@ -1,0 +1,47 @@
+{% extends "../layouts/master.html" %}
+
+{% block content %}
+<div ng-controller="PeersCtrl">
+  <div class="col-md-12">
+    <h3 class="pull-left">Connected peers</h3>
+    <div class="clearfix"></div>
+    <hr>
+    <div class="col-md-3" ng-repeat="peer in peers">
+      <div class="well">
+        <h4>{{peer.ip}}
+          <i ng-show="peer.status && ! peer.nse" style="color: green;" class="glyphicon glyphicon-ok"></i>
+          <!-- <i ng-show="! peer.status" style="color: red;" class="glyphicon glyphicon-remove"></i> -->
+          <i ng-show="! peer.status || peer.nse" style="color: red;" class="glyphicon glyphicon-remove"></i>
+        </h4>
+        <p>{{(peer.nse) ? 'NSE node' : ' &nbsp; '}}</p>
+
+      </div>
+    </div>
+    <div class="col-md-3" ng-hide="peers.length > 0">
+      <div class="well">
+        <h4>No peers connected</h4>
+        <!-- <p></p> -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+  $('#navHome').addClass('active');
+</script>
+
+<script>
+angular.module('DeployerApp')
+  .controller('PeersCtrl', ['$scope', '$http', function ($scope, $http) {
+    window.s = $scope;
+    $scope.peers = <%= JSON.stringify(peers) %>;
+    $scope.error = <%= JSON.stringify(error) %>;
+
+    function fail (err) {
+      toastr.error('Error');
+    }
+  }]);
+</script>
+{% endblock %}

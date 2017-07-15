@@ -1,0 +1,46 @@
+{% extends '../layouts/master.html' %} 
+
+{% block content %}
+<div class="row" ng-controller="AcceptBGCtrl">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        Bank Guarantees offered to me:
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="list-group">
+              <a class="list-group-item cur" ng-repeat="bankG in bankGs" style="margin:15px;padding:15px">
+                <h4 class="list-group-item-heading">Bank guarantee proposal received at {{bankG.updated_at | date: "medium" }}</h4><br>
+                <span style="font-weight:bold;">Terms of bank guarantee:</span> 
+                <p>{{bankG.terms}}</p>
+                <br><br>
+                <span style="font-weight:bold;">This contract refers to the contract with the following number:</span> 
+                <p>{{bankG.contract_token}}</p>
+                <br>
+                <button ng-show="! bankG.accepted" ng-click="acceptBG(bankG)" class="btn btn btn-primary rblbluebutton">Accept this Bank Guarantee</button>
+                <button ng-show="bankG.accepted" class="btn btn btn-warning">This Bank Guarantee has been successfully accepted</button>
+
+              </a>
+              <h4 ng-show="bankGs.length == 0">You have not yet been offered any bank guarantees</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "../layouts/master.html" %}
+
+{% block content %}
+<div ng-controller="HomeCtrl">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="btn-group-cus">
+        <a href="/label1" type="button" class="btn btn-primary btn-cus btn-lg">Add</a>
+        <a href="/search" type="button" class="btn btn-primary btn-cus btn-lg">Search</a>
+        <a href="/manage" type="button" class="btn btn-primary btn-cus btn-lg">Manage Banks</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+{% block javascript %}
+<style>
+.btn-cus {
+  width: 200px;
+}
+.btn-group-cus {
+  margin: 150px auto;
+    text-align: center;
+margin-bottom: 300px;
+}
+</style>
+
+<script>
+  $('#navHome').addClass('active');
+</script>
+
+<script>
+angular.module('DeployerApp')
+  .controller('HomeCtrl', ['$scope', '$http', function ($scope, $http) {
+    window.s = $scope;
+    $scope.label = 'familydetails';
+    $scope.projects = <%= JSON.stringify(projects) %>;
+    $scope.projectDelete = projectDelete;
+
+    function projectDelete (project, index) {
+      if (! confirm('Are you sure!')) return;
+      $http.delete('/projects/' + project._id)
+        .then(function (data) {
+          $scope.projects.splice(index, 1);
+        }, fail);
+    }
+
+    function fail (err) {
+      toastr.error('Error');
+    }
+  }]);
+</script>
+{% endblock %}

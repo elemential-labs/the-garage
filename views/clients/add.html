@@ -1,0 +1,113 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<div class="row" ng-controller="ClientOnboardCtrl">
+  <div class="col-md-8 col-md-offset-2">
+    <section class="panel">
+      <header class="panel-heading">
+        Onboard a Client
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form class="form" ng-submit="clientOnboard(client)" name="clientOnboardFrm">
+              <div class="form-group">
+                <label>Name:</label>
+                <input required class="form-control" type="text" placeholder="Enter the name of the client" ng-model="client.name">
+              </div>
+              <div class="form-group">
+                <label>Email:</label>
+                <input required class="form-control" type="email" placeholder="Enter the email of the client" ng-model="client.email">
+              </div>
+              <div class="form-group">
+                <label>Phone No:</label>
+                <input required class="form-control" type="text" placeholder="Enter the Phone No of the client" ng-model="client.phone_no">
+              </div>
+              <div class="form-group">
+                <label>PAN:</label>
+                <input class="form-control" type="text" placeholder="Enter the PAN of the client" ng-model="client.pan">
+              </div>
+              <div class="form-group">
+                <label>TAN:</label>
+                <input class="form-control" type="text" placeholder="Enter the TAN of the client" ng-model="client.tan">
+              </div>
+              <div class="form-group">
+                <label>Registered address:</label>
+                <textarea required class="form-control" placeholder="Enter the registered address of the client" ng-model="client.registered_address"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Contact person:</label>
+                <input class="form-control" type="text" placeholder="Enter the Contact person" ng-model="client.contact_person">
+              </div>
+
+              <button class="btn btn-primary rblbluebutton" type="submit"><i class="fa fa-user"></i> Onboard Client</button>
+              <!--<img ng-show="progress" src="/images/loader-rolling.gif" alt="" width="30">-->
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var me = <%= JSON.stringify(user) %>
+  </script>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}
+
+
+
+ <!-- buyer: String,
+  seller: String,
+  applicant: String,
+  counterparty: String,
+  sale_of_goods: String,
+  purchase_price: Number,
+  payment_method: {
+    type: String,
+    enum: ['1', '2', '3']
+    // enum: ['Cash', 'Cheque', 'Cards']
+  },
+  down_payment: Number,
+  time_of_payment: {
+    option: {
+      type: String,
+      enum: ['1', '2', '3']
+      // enum: ['Signing of agreement', 'Delivery of goods', 'Specified date']
+    },
+    value: {
+      type: Date
+    }
+  },
+  delivery_of_goods: Date,
+  condition_of_goods: String,
+  additional_terms_and_conditions: String,
+  contract: {
+    link: String,
+    hash: String
+  },
+  token: {
+    type: String,
+    default: uuid.v1(),
+    index: true
+  },
+  terms: String,
+  create_at: {
+    type: Date,
+    default: Date.now
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now
+  }
+}) -->

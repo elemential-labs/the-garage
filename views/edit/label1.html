@@ -1,0 +1,45 @@
+  <div class="col-md-3">
+    <sidenav ></sidenav>
+  </div>
+  <div class="col-md-9">
+    <div  ng-show="label == 'one'" class="white-box">
+      <form>
+        <div class="form-group">
+          <label>Application type</label>
+          <input ng-model="user.type" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>
+            PAN CARD <a ng-show="user.panNumFile" ng-href="{{user.panNumFile}}" target="_blank">Download file</a>
+          </label>
+          <input ng-model="user.panNum" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>
+            Aadhar Number <a ng-show="user.aadharNumFile" ng-href="{{user.aadharNumFile}}" target="_blank">Download file</a>
+          </label>
+          <input ng-model="user.aadharNum"  type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>
+            Passport number <a ng-show="user.passportNumFile" ng-href="{{user.passportNumFile}}" target="_blank">Download file</a>
+          </label>
+          <input ng-model="user.passportNum"  type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Account type</label>
+          <input ng-model="user.accountType"  type="text" class="form-control">
+        </div>
+        <!-- <button class="btn btn-primary" type="submit">Add user</button> -->
+      </form>
+    </div>
+    {% include 'applicantname.html' %}
+    {% include 'applicantdetails.html' %}
+    {% include 'applicantaddressdetails.html' %}
+    {% include 'applicantcontactdetails.html' %}
+    {% include 'applicantdocdetails.html' %}
+    {% include 'correspondenseaddressdetails.html' %}
+    {% include 'familydetails.html' %}
+    {% include 'jurisdictionaddressdetailsname.html' %}
+    {% include 'relatedpersondetails.html' %}
+  </div>

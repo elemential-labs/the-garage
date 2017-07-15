@@ -1,0 +1,162 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<div class="row" ng-controller="RequestBGCtrl">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        Apply for a Bank Guarantee for contract <%= contract._id %>
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form name="BGApplyFrm" ng-submit="applyForBG(contract)" novalidate>
+              <div class="modal-body">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Applicant:</label>
+                    <input disabled required class="form-control" type="text" placeholder="Enter the id of the applicant for this bank guarantee" ng-model="applicant">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Applicant Address:</label>
+                    <input required class="form-control" type="text" placeholder="Enter the applicant's address for this bank guarantee" ng-model="contract.applicant_address">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Applicant Contact Person:</label>
+                    <input required class="form-control" type="text" placeholder="Enter the applicant's contact person for this bank guarantee" ng-model="contract.applicant_contact_person">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Applicant Phone Number:</label>
+                    <input required class="form-control" type="text" placeholder="Enter the applicant's phone number for this bank guarantee" ng-model="contract.applicant_phone_no">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Applicant Email:</label>
+                    <input required class="form-control" type="text" placeholder="Enter the applicant's email address for this bank guarantee" ng-model="contract.applicant_email">
+                  </div>
+                </div>
+                <div class="col-md-6 border-left">
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Beneficiary:</label>
+                    <input disabled required class="form-control" type="text" placeholder="Enter the name of the beneficiary of this bank guarantee" ng-model="counterparty">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Beneficiary Address:</label>
+                    <input required class="form-control" type="text" placeholder="Enter the beneficiary's address for this bank guarantee" ng-model="contract.beneficiary_address">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Beneficiary Contact Person:</label>
+                    <input required class="form-control" type="text" placeholder="Enter the beneficiary's contact person for this bank guarantee" ng-model="contract.beneficiary_contact_person">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Beneficiary Phone Number:</label>
+                    <input required class="form-control" type="text" placeholder="Enter the beneficiary's phone number for this bank guarantee" ng-model="contract.beneficiary_phone_no">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-weight:bold;">Beneficiary Email:</label>
+                    <input required class="form-control" type="text" placeholder="Enter the beneficiary's email for this bank guarantee" ng-model="contract.beneficiary_email">
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <hr>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Bank:</label>
+                  <select name="bankSelect" id="bankSelect" class="form-control" ng-options="b.token as b.name for b in banks" ng-model="contract.bank"></select>
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Bank Branch:</label>
+                  <input required class="form-control" type="text" placeholder="Select the branch of the bank you wish to transact with" ng-model="contract.branch">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Bank Guarantee Amount:</label>
+                  <input required class="form-control" type="text" placeholder="Enter the Indian Rupee amount the Bank Guarantee should be issued for" ng-model="contract.amount" isnumber>
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Bank Guarantee Collateral:</label>
+                  <input required class="form-control" type="text" placeholder="Enter collateral for the bank guarantee" ng-model="contract.collateral_details">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Bank Guarantee Purpose:</label>
+                  <input required class="form-control" type="text" placeholder="Enter purpose of the bank guarantee" ng-model="contract.purpose">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Bank Guarantee Term:</label>
+                  <input required class="form-control" validdate type="date" placeholder="Enter term of the bank guarantee" ng-model="contract.term">
+                </div>
+                <!-- <div class="form-group">
+                  <label style="font-weight:bold;">Claim Period:</label>
+                  <input required class="form-control" type="date" placeholder="What is the claim period of the bank guarantee" ng-model="contract.claim_perios">
+                </div> -->
+                <!-- <div class="form-group">
+                  <label style="font-weight:bold;">Type of Bank Guarantee:</label> <br>
+                  <input type="radio"  id="financial" ng-value="1" ng-model="contract.type_of_guarantee"> Financial <br>
+                  <input type="radio"  id="performance" ng-value="2" ng-model="contract.type_of_guarantee"> Performance<br>
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Nature of Bank Guarantee:</label> <br>
+                  <input type="radio"  id="advancePayment" ng-value="1" ng-model="contract.nature_of_guarantee"> Advance Payment <br>
+                  <input type="radio"  id="customs" ng-value="2" ng-model="contract.nature_of_guarantee"> Customs <br>
+                  <input type="radio"  id="bidBond" ng-value="3" ng-model="contract.nature_of_guarantee"> Bid Bond <br>
+                  <input type="radio"  id="warranty" ng-value="4" ng-model="contract.nature_of_guarantee"> Warranty <br>
+                  <input type="radio"  id="tradeDebt" ng-value="5" ng-model="contract.nature_of_guarantee"> Trade Debt <br>
+                  <input type="radio"  id="others" ng-value="0" ng-model="contract.nature_of_guarantee"> Other
+                </div>
+                <div class="form-group" ng-show="contract.nature_of_guarantee == 0">
+                  <input ng-required="contract.nature_of_guarantee == 0" required class="form-control" type="text" placeholder="If you selected 'Other' in the field above, please specify here" ng-model="contract.nature_of_guarantee_others">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Method of Issue:</label> <br>
+                  <input type="radio"  id="physicalDocument" ng-value="1" ng-model="contract.method_of_issue"> Physical Document <br>
+                  <input type="radio"  id="swiftMessage" ng-value="2" ng-model="contract.method_of_issue"> SWIFT Message <br>
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Bank Account Number:</label>
+                  <input required class="form-control" type="text" placeholder="Account to be debited towards BG commission and other charges" ng-model="contract.bank_account_no">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Margin Money:</label>
+                  <textarea required class="form-control" name="margin_money" ng-model="contract.margin_money" placeholder="Enter details about the margin money and collateral you will be providing"></textarea>
+                </div> -->
+                <!-- <div class="form-group">
+                  <label style="font-weight:bold;">Beneficiary Delivery Details:</label>
+                  <input required class="form-control" type="text" placeholder="Enter the name and address of the beneficiary for delivery of the BG" ng-model="contract.delivery_details">
+                </div> -->
+                <div class="form-group">
+                  <label style="font-weight:bold;">Financial Records:</label>
+                  <input type="file" class="form-control" ng-file-upload ngf-select="upload($file)">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Purchase Order/Invoice:</label>
+                  <input type="file" class="form-control">
+                </div>
+
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary rblbluebutton">Apply for bank guarantee</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+  var me = <%= JSON.stringify(user) %>
+  var contract = <%= JSON.stringify(contract) %>
+</script>
+
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}

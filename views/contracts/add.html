@@ -1,0 +1,143 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<div class="row" ng-controller="ContractAddCtrl">
+  <div class="col-md-8 col-md-offset-2">
+    <section class="panel">
+      <header class="panel-heading">
+        Create A Sales And Purchase Contract
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form class="form" ng-submit="contractCreate(contract)" name="contractCreateFrm">
+              <div class="form-group">
+                <label>Buyer:</label>
+                <select required ng-options="b.token as b.option for b in users" ng-model="contract.buyer" class="form-control">
+                  <option value="">Choose a buyer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Seller:</label>
+                <select required ng-options="s.token as s.option for s in users" ng-model="contract.seller" class="form-control">
+                  <option value="">Choose a seller</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Sale of Goods:</label>
+                <textarea required class="form-control" name="goods" ng-model="contract.sale_of_goods" placeholder="Enter details about the type and quantity of goods to be sold/purchased."></textarea>
+              </div>
+              <div class="form-group">
+                <label>Purchase Price:</label>
+                <input required class="form-control" type="text" placeholder="Enter the total purchase price of the goods in Indian Rupees" ng-model="contract.purchase_price">
+              </div>
+              <div class="form-group">
+                <label>Payment Method:</label> <br>
+                <input type="radio" ng-value="1" ng-model="contract.payment_method"> Cash <br>
+                <input type="radio" ng-value="2" ng-model="contract.payment_method"> Cheque <br>
+                <input type="radio" ng-value="3" ng-model="contract.payment_method"> Card
+              </div>
+              <div class="form-group">
+                <label>Down Payment:</label>
+                <input required class="form-control" type="text" placeholder="Enter the down payment to be made in Indian Rupees"ng-model="contract.down_payment">
+              </div>
+              <div class="form-group">
+                <label>Payment Due Date:</label> <br>
+                <input type="radio" ng-value="1" ng-model="contract.time_of_payment"> Signing of Agreement <br>
+                <input type="radio" ng-value="2" ng-model="contract.time_of_payment"> Delivery of Goods <br>
+                <input type="radio" ng-value="3" ng-model="contract.time_of_payment"> Specified time <input type="date" validdate name="payment_date" id="payment_date" ng-model="contract.time_of_payment_specified_date">
+              </div>
+              <div class="form-group">
+                <label>Delivery Date of Goods:</label>
+                <input required class="form-control" type="date" validdate placeholder="Enter the delivery due of this contract" ng-model="contract.delivery_of_goods">
+              </div>
+              <div class="form-group">
+                <label>Condition of Goods:</label>
+                <textarea required class="form-control" name="condition" ng-model="contract.condition_of_goods" placeholder="Specify details about the conditions the goods should be received in "></textarea>
+              </div>
+              <div class="form-group">
+                <label>Additional Terms & Conditions:</label>
+                <textarea required class="form-control" name="terms" ng-model="contract.additional_terms_and_conditions"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Upload contract:</label>
+                <input type="file" ngf-select="fileUpload($file)" >
+              </div>
+
+              <!-- <div class="form-group">
+                <label>Supporting File Uploads:</label> <br>
+                Sales and Purchase Contract: <input type="file" name="po" id="po" ng-model="filePO"> <br>
+                Memorandum of Understanding: <input type="file" name="mou" id="mou" ng-model="fileMOU">
+              </div> -->
+
+              <button class="btn btn-primary rblbluebutton" type="submit">Create contract</button>
+              <!--<img ng-show="progress" src="/images/loader-rolling.gif" alt="" width="30">-->
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var me = <%= JSON.stringify(user) %>
+  </script>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}
+
+
+
+ <!-- buyer: String,
+  seller: String,
+  applicant: String,
+  counterparty: String,
+  sale_of_goods: String,
+  purchase_price: Number,
+  payment_method: {
+    type: String,
+    enum: ['1', '2', '3']
+    // enum: ['Cash', 'Cheque', 'Cards']
+  },
+  down_payment: Number,
+  time_of_payment: {
+    option: {
+      type: String,
+      enum: ['1', '2', '3']
+      // enum: ['Signing of agreement', 'Delivery of goods', 'Specified date']
+    },
+    value: {
+      type: Date
+    }
+  },
+  delivery_of_goods: Date,
+  condition_of_goods: String,
+  additional_terms_and_conditions: String,
+  contract: {
+    link: String,
+    hash: String
+  },
+  token: {
+    type: String,
+    default: uuid.v1(),
+    index: true
+  },
+  terms: String,
+  create_at: {
+    type: Date,
+    default: Date.now
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now
+  }
+}) -->

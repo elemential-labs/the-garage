@@ -1,0 +1,60 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<div class="row" ng-controller="BGApplicationListCtrl">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        My Bank Guarantee Application Inbox
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <di]v class="col-md-12">
+            <div class="list-group">
+              <a class="list-group-item cur" ng-repeat="BGApplication in BGApplications" style="margin:15px;padding:15px">
+                <h4 class="list-group-item-heading">Application to <span style="text-decoration:underline;">RBL</span> created at: <span style="text-decoration:underline;">{{BGApplication.created_at | date:'medium'}}</span></h4>
+                <ul class="list-group" style="margin:10px;padding:5px">
+                      <li class="list-group-item"><span style="font-weight:bold;">BG Beneficiary:</span> {{BGApplication.beneficiary._id}} - {{BGApplication.beneficiary.name}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Underlying contract:</span> Contract_ID_{{BGApplication.contract._id}}</li>
+                      <li class="list-group-item"><span style="font-weight:bold;">Bank:</span> {{BGApplication.bank}}</li>
+                      <!-- <li class="list-group-item"><span style="font-weight:bold;">Validity:</span> {{BGApplication.validity | date:'medium'}}</li> -->
+                      <!-- <li class="list-group-item"><span style="font-weight:bold;">Claim period:</span> {{BGApplication.claim_period}}</li> -->
+                      <!-- <li class="list-group-item"><span style="font-weight:bold;">Type of guarantee:</span> {{BGApplication.type_of_guarantee}}</li> -->
+                      <!-- <li class="list-group-item"><span style="font-weight:bold;">Nature of guarantee:</span> {{BGApplication.nature_of_guarantee}}</li> -->
+                      <!-- <li ng-show="BGApplication.nature_of_guarantee=='Specified below'" class="list-group-item"><span style="font-weight:bold;">Nature of guarantee details:</span> {{BGApplication.additional_nature_of_guarantee_others}}</li> -->
+                      <!-- <li class="list-group-item"><span style="font-weight:bold;">Method of issue:</span> {{BGApplication.method_of_issue}}</li> -->
+                      <!-- <li class="list-group-item"><span style="font-weight:bold;">Bank account number:</span> {{BGApplication.bank_account_no}}</li> -->
+                      <!-- <li class="list-group-item"><span style="font-weight:bold;">Margin money specifications:</span> {{BGApplication.margin_money}}</li> -->
+                      <li class="list-group-item"><span style="font-weight:bold;">Download financial records:</span> <button class="btn btn-link" ng-click="goToW(BGApplication.financial_record.link)">Download link</button></li>
+                    </ul>
+                <br>
+                <div>
+                  <span ng-show="BGApplication.accepted" class="label label-primary rblbluebutton">Accepted</span>
+                  <span ng-show="BGApplication.rejected" class="label label-danger rblredbutton">Rejected</span>
+                  <p ng-show="BGApplication.rejected"><br><span style="font-weight:bold;">Rejection reason: </span>{{BGApplication.rejection_reason}}</p>
+                  <span ng-show="BGApplication.pending" class="label label-danger">Pending</span>
+                </div>
+              </a>
+              <h4 ng-show="BGApplications.length == 0">No Applications yet</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var me = <%= JSON.stringify(user) %>
+  </script>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}

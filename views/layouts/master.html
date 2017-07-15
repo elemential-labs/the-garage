@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="ElementialApp">
+  {% include '../partials/head.html' %}
+  <body ng-controller="MainCtrl" ng-cloak class="ng-cloak">
+    <section id="container">
+
+      {% include '../partials/header.html' %}
+      {% include '../partials/sidebar.html' %}
+
+      <!--main content start-->
+      <section id="main-content">
+        <section class="wrapper">
+          {% block content %}{% endblock %}
+        </section>
+      </section>
+
+    </section>
+    <audio src="/tones/alert1.ogg" preload="auto" id="alert1">
+    <script>
+      function alertSound(soundObj) {
+        if (! soundObj) soundObj = 'alert1'
+        var sound = document.getElementById(soundObj)
+        sound.play()
+      }
+    </script>
+    {% include '../partials/footer-includes.html' %}
+    <style>
+      .form-control {
+        color: #000000 !important;
+      }
+      .ng-submitted input.ng-invalid, .ng-submitted select.ng-invalid, .ng-submitted textarea.ng-invalid {
+        border: 1px red solid;
+      }
+      .cur {
+        cursor: pointer;
+      }
+      .border-left {
+        border-left: 1px #aeb2b7 solid;
+      }
+    </style>
+    {% block javascript %}{% endblock %}
+  </body>
+</html>

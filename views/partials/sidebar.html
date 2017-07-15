@@ -1,0 +1,53 @@
+<aside>
+  <div id="sidebar" class="nav-collapse">
+    <div class="leftside-navigation">
+      <ul class="sidebar-menu" id="nav-accordion">
+        <div>
+          <li>
+            <a id="navDashboard" href="/">
+            <i class="fa fa-dashboard"></i>
+            <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a id="navUserRecordsAdd" href="/records/add">
+            <i class="fa fa-plus"></i>
+            <span>Add User Record</span>
+            </a>
+          </li>
+          <li>
+            <a id="navUserRecordsSearch" href="/records/search">
+            <i class="fa fa-search"></i>
+            <span>Search User Record</span>
+            </a>
+          </li>
+          <li ng-show="activeUserProfile.type == 1">
+            <a id="navNSETransactionsHistory" href="/history">
+              <i class="fa fa-list-ul"></i>
+              <span>Transactions history</span>
+            </a>
+          </li>
+          <li ng-show="activeUserProfile.type == 2">
+            <a id="navBankTransactionsHistory" href="/history/me">
+            <i class="fa fa-list-ul"></i>
+            <span>Transactions history</span>
+            </a>
+          </li>
+          <li>
+            <a id="navPeers" href="/peers">
+            <i class="fa fa-refresh"></i>
+            <span>Connected peers</span>
+            </a>
+          </li>
+        </div>
+
+        <li>
+          <a  href="/logout">
+          <i class="fa fa-sign-out"></i>
+          <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</aside>

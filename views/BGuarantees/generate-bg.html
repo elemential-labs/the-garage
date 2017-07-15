@@ -1,0 +1,288 @@
+{% extends '../layouts/master.html' %}
+
+{% block content %}
+<style>
+  .type-app {
+    font-size: 16px;
+  }
+  .disabled-block {
+    border-left: 1px solid #aeb2b7;
+    background-color: #eeeeee;
+  }
+</style>
+<div class="row" ng-controller="BGGenerateCtrl">
+  <div class="col-md-10 col-md-offset-1">
+    <section class="panel">
+      <header class="panel-heading">
+        Issue a Bank Guarantee
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form class="form" ng-submit="BGcreate(contract)" name="contractCreateFrm">
+              <div class="form-group">
+                <label>Application ID:</label>
+                <input type="text" disabled value="{{application_id}}" class="form-control">
+              </div>
+              <hr>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Applicant:</label>
+                  <select disabled required ng-options="b.token as b.option for b in users" ng-model="contract.applicant" class="form-control">
+                    <option value="">Choose an applicant</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Applicant Address:</label>
+                  <input class="form-control" type="text" ng-model="contract.applicant_address">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Applicant Contact Person:</label>
+                  <input class="form-control" type="text" ng-model="contract.applicant_contact_person">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Applicant Phone Number:</label>
+                  <input class="form-control" type="text" ng-model="contract.applicant_phone_no">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Applicant Email:</label>
+                  <input class="form-control" type="text" ng-model="contract.applicant_email">
+                </div>
+              </div>
+              <div class="col-md-6 border-left">
+                <div class="form-group">
+                  <label>Beneficiary:</label>
+                  <select disabled required ng-options="s.token as s.option for s in users" ng-model="contract.beneficiary" class="form-control">
+                    <option value="">Choose a beneficiary</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Beneficiary Address:</label>
+                  <input class="form-control" type="text" ng-model="contract.beneficiary_address">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Beneficiary Contact Person:</label>
+                  <input class="form-control" type="text" ng-model="contract.beneficiary_contact_person">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Beneficiary Phone Number:</label>
+                  <input class="form-control" type="text" ng-model="contract.beneficiary_phone_no">
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:bold;">Beneficiary Email:</label>
+                  <input class="form-control" type="text" ng-model="contract.beneficiary_email">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              <hr>
+              <div class="form-group">
+                <label>Bank:</label>
+                <select required ng-options="s.token as s.name for s in banks" ng-model="contract.bank" class="form-control">
+                  <option value="">Choose a bank</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Contract:</label>
+                <input disabled type="text" class="form-control" value="{{contract_id}}">
+              </div>
+              
+              <h4>Type of application:</h4>
+              <div class="col-md-4">
+                <label>
+                  <input type="checkbox">
+                    <span class="type-app">Issuance</span>
+                </label>
+                <div class="form-group">
+                  <label>Amount:</label>
+                  <input required class="form-control" type="text" placeholder="Enter the value of the bank guarantee in Indian Rupee terms" ng-model="contract.amount">
+                </div>
+                <div class="form-group">
+                  <label>Validity Period:</label>
+                  <input required class="form-control" type="date" validdate placeholder="Enter the value of the bank guarantee in Indian Rupee terms" ng-model="contract.validity">
+                </div>
+                <div class="form-group">
+                  <label>Claim Period:</label>
+                  <input required class="form-control" type="date" validdate placeholder="Enter the value of the bank guarantee in Indian Rupee terms" ng-model="contract.claim_period">
+                </div>
+                <div class="form-group">
+                  <label>Issuing Branch:</label>
+                  <input required class="form-control" type="text" placeholder="Enter the name of the issuing branch" ng-model="contract.issuing_branch">
+                </div>
+              </div>
+              <div class="col-md-4 disabled-block">
+                <label>
+                  <input disabled type="checkbox">
+                    <span class="type-app">Renewal</span>
+                </label>
+                <div class="form-group">
+                  <label>Increased by amount</label>
+                  <input disabled type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Decreased by amount</label>
+                  <input disabled type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Expiring guarantee number</label>
+                  <input disabled type="text" class="form-control">
+                </div>
+              </div>
+              <div class="col-md-4 disabled-block" style="border: none;">
+                <label>
+                  <input disabled type="checkbox">
+                    <span class="type-app">Extension / Amendment</span>
+                </label>
+                <div class="form-group">
+                  <label>Existing guarantee number</label>
+                  <input disabled type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>New expiry date</label>
+                  <input disabled type="date" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>New claim period</label>
+                  <input disabled type="date" class="form-control">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="form-group">
+                <label>Signatory 1 Name:</label>
+                <input required class="form-control" type="text" placeholder="Enter the name of the signatory" ng-model="contract.sig1_name">
+              </div>
+              <div class="form-group">
+                <label>Signatory 1 Designation:</label>
+                <input required class="form-control" type="text" placeholder="Enter the designation of the signatory" ng-model="contract.sig1_designation">
+              </div>
+              <div class="form-group">
+                <label>Signatory 1 P.A. Number:</label>
+                <input required class="form-control" type="text" placeholder="Enter the P.A. number of the signatory" ng-model="contract.sig1_pa_number">
+              </div>
+              <div class="form-group">
+                <label>Signatory 2 Name:</label>
+                <input class="form-control" type="text" placeholder="Enter the name of the signatory" ng-model="contract.sig2_name">
+              </div>
+              <div class="form-group">
+                <label>Signatory 2 Designation:</label>
+                <input class="form-control" type="text" placeholder="Enter the designation of the signatory" ng-model="contract.sig2_designation">
+              </div>
+              <div class="form-group">
+                <label>Signatory 2 P.A. Number:</label>
+                <input class="form-control" type="text" placeholder="Enter the P.A. number of the signatory" ng-model="contract.sig2_pa_number">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Type of Bank Guarantee:</label> <br>
+                <input type="radio"  id="financial" ng-value="1" ng-model="contract.type_of_guarantee"> Financial <br>
+                <input type="radio"  id="performance" ng-value="2" ng-model="contract.type_of_guarantee"> Performance<br>
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Nature of Bank Guarantee:</label> <br>
+                <input type="radio"  id="advancePayment" ng-value="1" ng-model="contract.nature_of_guarantee"> Advance Payment <br>
+                <input type="radio"  id="customs" ng-value="2" ng-model="contract.nature_of_guarantee"> Customs <br>
+                <input type="radio"  id="bidBond" ng-value="3" ng-model="contract.nature_of_guarantee"> Bid Bond <br>
+                <input type="radio"  id="warranty" ng-value="4" ng-model="contract.nature_of_guarantee"> Warranty <br>
+                <input type="radio"  id="tradeDebt" ng-value="5" ng-model="contract.nature_of_guarantee"> Trade Debt <br>
+                <input type="radio"  id="others" ng-value="0" ng-model="contract.nature_of_guarantee"> Other
+              </div>
+              <div class="form-group" ng-show="contract.nature_of_guarantee == 0">
+                <input ng-required="contract.nature_of_guarantee == 0" class="form-control" type="text" placeholder="If you selected 'Other' in the field above, please specify here" ng-model="contract.nature_of_guarantee_others">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Method of Issue:</label> <br>
+                <input type="radio"  id="physicalDocument" ng-value="1" ng-model="contract.method_of_issue"> Physical Document <br>
+                <input type="radio"  id="swiftMessage" ng-value="2" ng-model="contract.method_of_issue"> SWIFT Message <br>
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Bank Account Number:</label>
+                <input required class="form-control" type="text" placeholder="Client account that will be debited" ng-model="contract.bank_account_no">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Margin Money:</label>
+                <input required class="form-control" type="text" name="margin_money" ng-model="contract.margin_money" placeholder="Enter details about the margin money that is expected"></input>
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Collateral:</label>
+                <textarea required class="form-control" type="text" name="collateral" ng-model="contract.collateral" placeholder="Enter details about the collateral that is expected"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Upload Bond document:</label>
+                <input type="file" ngf-select="fileUpload($file)" >
+              </div>
+
+              <!-- <div class="form-group">
+                <label>Supporting File Uploads:</label> <br>
+                Sales and Purchase Contract: <input type="file" name="po" id="po" ng-model="filePO"> <br>
+                Memorandum of Understanding: <input type="file" name="mou" id="mou" ng-model="fileMOU">
+              </div> -->
+
+              <button class="btn btn-primary rblbluebutton" type="submit">Issue Bank Guarantee</button>
+              <!--<img ng-show="progress" src="/images/loader-rolling.gif" alt="" width="30">-->
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var me = <%= JSON.stringify(user) %>
+    var application = <%= JSON.stringify(application) %>
+  </script>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}
+
+<!-- applicant: String,
+  beneficiary: String,
+  bank: String,
+  contract: String,
+  contract_date: Date,
+  amount: Number,
+  validity: Date,
+  claim_period: Date,
+  issuing_branch: String,
+  sig1_name: String,
+  sig1_designation: String,
+  sig1_pa_no: String,
+  sig2_name: String,
+  sig2_designation: String,
+  sig2_pa_no: String,
+  type_of_guarantee: {
+    type: String,
+    enum: ['1', '2', '3']
+    // enum: ['Financial', 'Performance']
+  },
+  nature_of_guarantee: {
+    type: String,
+    enum: ['0', '1', '2', '3', '4', '5']
+    // enum: ['Advance payment', 'Customs', 'Bid bond', 'Warranty', 'Trade debt', 'Others']
+  },
+  nature_of_guarantee_others: String,
+  method_of_issue: {
+    type: String,
+    enum: ['1', '2']
+    // enum: ['Swift', 'Physical']
+  },
+  bank_account_no: String,
+  margin_money: Number,
+  token: {
+    type: String,
+    index: true
+  },
+  created_at: {
+    type: Date,
+    default: Date.now
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now
+  } -->

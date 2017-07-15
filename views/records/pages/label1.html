@@ -1,0 +1,109 @@
+{% extends "../layouts/master.html" %}
+
+{% block content %}
+<div ng-controller="Label1Ctrl">
+<div class="container-fluid">
+  <div class="row">
+   <div class="col-md-3">
+      <sidenav ></sidenav>
+   </div>
+  <div class="col-md-9">
+    <div  ng-show="label == 'one'" class="white-box">
+      <form>
+        <div class="form-group">
+          <label>Application type</label>
+          <input ng-model="user.type" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>PAN CARD</label>
+          <input ng-model="user.panNum" type="text" class="form-control">
+        </div>
+        <div ng-show="user.panNum" class="form-group">
+          <label>upload file</label>
+          <input ngf-select="uploadDocument('panNumFile', $file)" type="file">
+        </div>
+        <div class="form-group">
+          <label>Aadhar Number</label>
+          <input ng-model="user.aadharNum"  type="text" class="form-control">
+        </div>
+        <div ng-show="user.aadharNum" class="form-group">
+          <label>upload file</label>
+          <input ngf-select="uploadDocument('aadharNumFile', $file)" type="file">
+        </div>
+        <div class="form-group">
+          <label>Passport number</label>
+          <input ng-model="user.passportNum"  type="text" class="form-control">
+        </div>
+        <div ng-show="user.passportNum" class="form-group">
+          <label>upload file</label>
+          <input ngf-select="uploadDocument('passportNumFile', $file)" type="file">
+        </div>
+        <div class="form-group">
+          <label>Account type</label>
+          <input ng-model="user.accountType"  type="text" class="form-control">
+        </div>
+        <!-- <button class="btn btn-primary" type="submit">Add user</button> -->
+      </form>
+    </div>
+    {% include 'applicantname.html' %}
+    {% include 'applicantdetails.html' %}
+    {% include 'applicantaddressdetails.html' %}
+    {% include 'applicantcontactdetails.html' %}
+    {% include 'applicantdocdetails.html' %}
+    {% include 'correspondenseaddressdetails.html' %}
+    {% include 'familydetails.html' %}
+    {% include 'jurisdictionaddressdetailsname.html' %}
+    {% include 'relatedpersondetails.html' %}
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+  $('#navHome').addClass('active');
+</script>
+
+<script>
+angular.module('DeployerApp')
+  .controller('Label1Ctrl', ['$scope', '$http', 'Upload', function ($scope, $http, Upload) {
+    window.s = $scope;
+    $scope.label = 'one';
+    $scope.userSave = userSave;
+    $scope.uploadDocument = uploadDocument;
+
+    function userSave (user) {
+      $http.post('/transaction/push', {action: 'INSERT', payload: user})
+        .then(userSaved, userSaveFailed);
+    }
+    function userSaved (data) {
+      toastr.success('User has been saved');
+      $scope.user = {};
+    }
+    function userSaveFailed (err) {
+      toastr.error('Failed');
+      fail(err);
+    }
+    function uploadDocument (key, file) {
+      if (! file) return;
+      Upload.upload({
+        url: 'http://13.76.138.222:3000/api/files',
+        data: {token: 'esscale', file: file}
+      }).then(function (data) {
+        $scope.user[key] = data.data.url;
+        toastr.success('File is upoaded');
+      }, uploadFail);
+    }
+    function uploadFail (err) {
+      toastr.error('Upload failed')
+    }
+
+    function fail (err) {
+      // toastr.error('Error');
+      console.log(err);
+    }
+  }]);
+</script>
+{% endblock %}

@@ -1,0 +1,9 @@
+module.exports = {
+  monitor: 'http://localhost:9000',
+  user: {
+    name: 'Anil Dukkipatty',
+    email: 'anil@gmail.com',
+    token: 'anil-token'
+  },
+  env: "dev"
+}

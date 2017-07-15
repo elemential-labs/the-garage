@@ -1,0 +1,171 @@
+{% extends '../layouts/master.html' %} 
+
+{% block content %}
+<div class="row" ng-controller="RequestBGCtrl">
+  <div class="col-md-12">
+    <section class="panel">
+      <header class="panel-heading">
+        Apply for a Bank Guarantee 
+        <span class="tools pull-right">
+          <a href="javascript:;" class="fa fa-chevron-down"></a>
+        </span>
+      </header>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="list-group">
+              <a class="list-group-item cur" style="margin:15px;padding:15px" ng-repeat="contract in contracts" >
+                <h4 class="list-group-item-heading">Contract agreed with <b>{{contract.counterparty}}</b> created at: <b>{{contract.created_at | date: 'medium'}}</b></h4>
+                <p><b>Terms of the contract:</b></p>
+                <div ng-bind-html="contract.terms" class="list-group-item-text"></div>
+                <br>
+                <p>
+                  <b>Seller status: {{contract.seller_status_label}}</b>
+                </p>
+                <p>
+                  <b>Buyer status: {{contract.buyer_status_label}}</b>
+                </p>
+                <br>
+                <button ng-click="applyForBG(contract)" class="btn btn btn-primary">Use to apply for BG</button>
+              </a>
+              <h4 ng-show="contracts.length == 0">You don't yet have any mutually accepted contracts you can send to RBL for a BG</h4>
+
+              <button type="button" ng-click="showApplyBGModal(contract)" class="btn btn btn-primary">Test Button Apply BG</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal fade" id="openMe" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Application For Bank Guarantee</h4>
+        </div>
+        <form name="BGApplyFrm" ng-submit="BGApply(selectedContract, application)" novalidate>
+          <div class="modal-body">
+              <div class="form-group">
+                <label style="font-weight:bold;">Applicant:</label>
+                <input required class="form-control" type="text" placeholder="Enter the name of the applicant for this bank guarantee" ng-model="contract.applicant">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Beneficiary:</label>
+                <input required class="form-control" type="text" placeholder="Enter the name of the beneficiary of this bank guarantee" ng-model="contract.beneficiary">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Bank:</label>
+                <select name="bankSelect" id="bankSelect" class="form-control" ng-options="b.token as b.name for b in banks" ng-model="contract.bank"></select>
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Bank Guarantee Amount:</label>
+                <input required class="form-control" type="text" placeholder="Enter the Indian Rupee amount the Bank Guarantee should be issued for" ng-model="contract.amount">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Bank Guarantee Validity:</label>
+                <input required class="form-control" type="text" placeholder="Enter the validity details of the bank guarantee" ng-model="contract.validity">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Claim Period:</label>
+                <input required class="form-control" type="date" placeholder="What is the claim period of the bank guarantee" ng-model="contract.claim_perios">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Type of Bank Guarantee:</label> <br>
+                <input type="radio" name="Cash" id="financial" ng-value="1" ng-model="contract.type_of_guarantee"> Financial <br>
+                <input type="radio" name="Cash" id="performance" ng-value="2" ng-model="contract.type_of_guarantee"> Performance<br>
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Nature of Bank Guarantee:</label> <br>
+                <input type="radio" name="Cash" id="advancePayment" ng-value="1" ng-model="contract.nature_of_guarantee"> Advance Payment <br>
+                <input type="radio" name="Cash" id="customs" ng-value="2" ng-model="contract.nature_of_guarantee"> Customs <br>
+                <input type="radio" name="Cash" id="bidBond" ng-value="3" ng-model="contract.nature_of_guarantee"> Bid Bond <br>
+                <input type="radio" name="Cash" id="warranty" ng-value="4" ng-model="contract.nature_of_guarantee"> Warranty <br>
+                <input type="radio" name="Cash" id="tradeDebt" ng-value="5" ng-model="contract.nature_of_guarantee"> Trade Debt <br>
+                <input type="radio" name="Cash" id="others" ng-value="0" ng-model="contract.nature_of_guarantee"> Other
+              </div>
+              <div class="form-group">
+                <input required class="form-control" type="text" placeholder="If you selected 'Other' in the field above, please specify here" ng-model="contract.nature_of_guarantee_others">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Method of Issue:</label> <br>
+                <input type="radio" name="Cash" id="physicalDocument" ng-value="1" ng-model="contract.method_of_issue"> Physical Document <br>
+                <input type="radio" name="Cash" id="swiftMessage" ng-value="2" ng-model="contract.method_of_issue"> SWIFT Message <br>
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Bank Account Number:</label>
+                <input required class="form-control" type="text" placeholder="Account to be debited towards BG commission and other charges" ng-model="contract.bank_account_no">
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Margin Money:</label>
+                <textarea required class="form-control" name="margin_money" ng-model="contract.margin_money" placeholder="Enter details about the margin money and collateral you will be providing"></textarea>
+              </div>
+              <div class="form-group">
+                <label style="font-weight:bold;">Beneficiary Delivery Details:</label>
+                <input required class="form-control" type="text" placeholder="Enter the name and address of the beneficiary for delivery of the BG" ng-model="contract.delivery_details">
+              </div>
+
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" ng-click="proposeBG">Generate bank guarantee</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<script>
+  var me = <%= JSON.stringify(user) %>
+</script>
+
+</div>
+{% endblock %}
+
+{% block javascript %}
+  <style>
+    .mar-up {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}
+
+
+<!-- applicant: String,
+  beneficiary: String,
+  bank: String,
+  amount: Number,
+  validity: Date,
+  claim_period: Date,
+  type_of_guarantee: {
+    type: String,
+    enum: ['1', '2', '3']
+    // enum: ['Financial', 'Performance']
+  },
+  nature_of_guarantee: {
+    type: String,
+    enum: ['0', '1', '2', '3', '4', '5']
+    // enum: ['Advance payment', 'Customs', 'Bid bond', 'Warranty', 'Trade debt', 'Others']
+  },
+  nature_of_guarantee_others: String,
+  method_of_issue: {
+    type: String,
+    enum: ['1', '2']
+    // enum: ['Swift', 'Physical']
+  },
+  bank_account_no: String,
+  margin_money: Number,
+  token: {
+    type: String,
+    index: true
+  },
+  created_at: {
+    type: Date,
+    default: Date.now
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now
+  } -->
