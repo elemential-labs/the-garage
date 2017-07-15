@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { get, post } = require('../lib/http')
-const User = require('../models/User')
+const { User } = require('../models/User')
 
 const uuid = require('node-uuid')
 
