@@ -61,7 +61,8 @@ app.use('/', require('./routes/index')(io))
 app.use(function(req, res, next) {
   var err = new Error('Not Found')
   err.status = 404
-  next(err)
+  // next(err)
+  return res.send('This is an invalid API call')
 })
 
 // error handlers
