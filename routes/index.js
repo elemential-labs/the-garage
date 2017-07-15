@@ -17,12 +17,15 @@ function api (req, res) {
     console.log(user)
     if (err) return res.status(500).send({code: 500, message: 'Internal error'})
     if (user.length == 0) return res.status(400).send({code: 2, message: 'No record with UID found'})
-    user = user[0]
+    user = user[0].toObject()
+  console.log(user)
     const dataHash = cleanse(req.body)
+    console.log(dataHash)
     let ans = {}
     Object.keys(dataHash).forEach(k => {
       if (user[k] != dataHash[k]) ans[k] = 1
       if (user[k] == dataHash[k]) ans[k] = 2
+      console.log(user[k], dataHash[k])
     })
     return res.send(ans)
   })
